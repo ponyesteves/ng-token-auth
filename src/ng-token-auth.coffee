@@ -215,7 +215,7 @@ angular.module('ng-token-auth', ['ipCookie'])
               .error((resp) =>
                 @rejectDfd({
                   reason: 'unauthorized'
-                  errors: ['Invalid credentials']
+                  errors: resp.errors
                 })
                 $rootScope.$broadcast('auth:login-error', resp)
               )
@@ -473,7 +473,7 @@ angular.module('ng-token-auth', ['ipCookie'])
                 # determine querystring params accounting for possible angular parsing issues
                 location_parse = @parseLocation(window.location.search)
                 params = if Object.keys(search).length==0 then location_parse else search
-                
+
                 # auth_token matches what is sent with postMessage, but supporting token for
                 # backwards compatability
                 token = params.auth_token || params.token
@@ -795,7 +795,7 @@ angular.module('ng-token-auth', ['ipCookie'])
           # 3. default (first available config)
           getSavedConfig: ->
             c   = undefined
-            key = 'currentConfigName'            
+            key = 'currentConfigName'
 
             if @hasLocalStorage()
               c ?= JSON.parse($window.localStorage.getItem(key))

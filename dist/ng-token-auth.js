@@ -196,7 +196,7 @@ angular.module('ng-token-auth', ['ipCookie']).provider('$auth', function() {
                 return function(resp) {
                   _this.rejectDfd({
                     reason: 'unauthorized',
-                    errors: ['Invalid credentials']
+                    errors: resp.errors
                   });
                   return $rootScope.$broadcast('auth:login-error', resp);
                 };
@@ -395,18 +395,21 @@ angular.module('ng-token-auth', ['ipCookie']).provider('$auth', function() {
               return str.join("&");
             },
             parseLocation: function(location) {
-              var i, obj, pair, pairs;
-              pairs = location.substring(1).split('&');
+              var i, locationSubstring, obj, pair, pairs;
+              locationSubstring = location.substring(1);
               obj = {};
-              pair = void 0;
-              i = void 0;
-              for (i in pairs) {
-                i = i;
-                if (pairs[i] === '') {
-                  continue;
+              if (locationSubstring) {
+                pairs = locationSubstring.split('&');
+                pair = void 0;
+                i = void 0;
+                for (i in pairs) {
+                  i = i;
+                  if (pairs[i] === '') {
+                    continue;
+                  }
+                  pair = pairs[i].split('=');
+                  obj[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
                 }
-                pair = pairs[i].split('=');
-                obj[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
               }
               return obj;
             },
